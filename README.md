@@ -1,7 +1,7 @@
 # Chromium-49-Windows-XP
 Chromium build 49.0.2623.23 archived repo ready to use / build for older Windows XP systems
 
-# ![Logo](chrome/app/theme/chromium/product_logo_64.png) Chromium
+# ![Logo](https://github.com/chromium/chromium/blob/master/chrome/app/theme/chromium/product_logo_64.png) Chromium
 
 Chromium is an open-source browser project that aims to build a safer, faster,
 and more stable way for all users to experience the web.
