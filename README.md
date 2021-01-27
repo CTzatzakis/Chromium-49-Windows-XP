@@ -9,7 +9,7 @@ and more stable way for all users to experience the web.
 The project's web site is https://www.chromium.org.
 
 To check out the source code locally, don't use `git clone`! Instead,
-follow [the instructions on how to get the code](docs/get_the_code.md).
+follow [the instructions on how to get the code](https://github.com/chromium/chromium/blob/master/docs/get_the_code.md).
 
 Documentation in the source is rooted in [docs/README.md](https://github.com/chromium/chromium/blob/master/docs/README.md).
 
