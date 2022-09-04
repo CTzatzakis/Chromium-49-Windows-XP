@@ -1,12 +1,9 @@
-# Chromium-49-Windows-XP
+# ![Logo](https://github.com/chromium/chromium/blob/master/chrome/app/theme/chromium/product_logo_64.png) Chromium-49-Windows-XP
 Chromium build 49.0.2623.23 archived repo ready to use / build for older Windows XP systems, Window XP SP3+.
 
-# ![Logo](https://github.com/chromium/chromium/blob/master/chrome/app/theme/chromium/product_logo_64.png) Chromium
-
-
 # Table of Contents
-* [Chromium Embedded Framework Build Process  ](#Chromium-Embedded-Framework-Build-Process  )
-  * [To build a release branch: ](#To-build-a-release-branch: )
+* [Chromium Embedded Framework Build Process](#Chromium-Embedded-Framework-Build-Process  )
+  * [To build a release branch:](#To-build-a-release-branch)
   * [Get CEF](#Get-CEF)
   * [Windows Setup](#Windows-Setup)
 * [Troubleshooting](#Troubleshooting)
@@ -33,7 +30,7 @@ Requirements  Branch 2623 have the following build requirements, until Aug 2020 
 | Win10 SDK  |  10.6+ deployment target  |    |
 | Ninja  |   Ninja, 64-bit only  |  Ninja  |
 
-### To build a release branch: 
+### To build a release branch 
 ```
 python /path/to/automate/automate-git.py --download-dir=/path/to/download --branch=2623 
 ```
@@ -46,23 +43,32 @@ git checkout -t origin/2623
 ### Windows Setup
 Step-by-step Guide
 All the below commands should be run using the system ```cmd.exe``` and not a Cygwin shell.
+
 1. Create the following directories.
 ```
    c:\code\automate
    c:\code\chromium_git
 ```
    WARNING: If you change the above directory names/locations make sure to (a) use only ASCII characters and (b) choose a short file path (less than 35 characters total). Otherwise, some tooling may fail later in the build process due to invalid or overly long file paths.
+
 2. Get depot_tools from the repo and extract to ```c:\code\depot_tools```. Do not use drag-n-drop or copy-n-paste extract from Explorer, this will not extract the hidden ".git" folder which is necessary for depot_tools to auto-update itself. You can use "Extract all..." from the context menu though. 7-zip is also a good tool for this.
+
+
 3. Run "update_depot_tools.bat" to install Python and Git. * We don’t need that for our pcs because we already have them.
     ``` 
    cd c:\code\depot_tools
    update_depot_tools.bat
     ```
+   
 4. Add the ```c:\code\depot_tools``` folder to your system PATH. For example, on Windows 10:
    •	Run the ```SystemPropertiesAdvanced``` command.
    •	Click the ```Environment Variables...``` button.
    •	Double-click on ```Path``` under ```System variables``` to edit the value.
+
+
 5. Automate-git.py should be inside the folder structure in the repo. You can download the automate-git.py from the repo or download the one from the official CEF site. Script location should be: ```c:\code\automate\automate-git.py```.
+
+
 6. Create the ```c:\code\chromium_git\update.bat``` script with the following contents.
 ```
    set GN_DEFINES=is_component_build=true
