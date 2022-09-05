@@ -3,7 +3,9 @@ Chromium build 49.0.2623.23 archived repo ready to use / build for older Windows
 
 # Table of Contents
 * [Chromium Embedded Framework Build Process](#Chromium-Embedded-Framework-Build-Process  )
-  * [To build a release branch:](#To-build-a-release-branch)
+  * [Folder Structure](#Folder-Structure)
+  * [Set System Variables](#Set-System-Variables)
+  * [To build a release branch](#To-build-a-release-branch)
   * [Get CEF](#Get-CEF)
   * [Windows Setup](#Windows-Setup)
 * [Troubleshooting](#Troubleshooting)
@@ -21,7 +23,7 @@ Chromium build 49.0.2623.23 archived repo ready to use / build for older Windows
 
 This is a build guide as of Feb 24 2021, to build CEF/Chromium version 49.0.2623.23 and also 49.3.2623.1401/ 49.0.2623.110 
 
-Requirements  Branch 2623 have the following build requirements, until Aug 2020 that it was tested: 
+Requirements  Branch 2623 have the following build requirements, until Aug 2020 where it was tested: 
 
 | Windows  | macOS | Linux  |
 | ------------- | ------------- | ------------- |
@@ -29,6 +31,34 @@ Requirements  Branch 2623 have the following build requirements, until Aug 2020 
 | VS2013u4 or  VS2015u1 (experimental)  | 10.7+ build system w/ 10.10+  base SDK (Xcode 7.1.1+) | Debian Wheezy+   |
 | Win10 SDK  |  10.6+ deployment target  |    |
 | Ninja  |   Ninja, 64-bit only  |  Ninja  |
+
+
+### Folder Structure
+
+```
+~/code/
+    automate/
+        automate-git.py      <-- CEF build script
+    chromium_git/
+        cef/                 <-- CEF source checkout
+        chromium/
+            src/            <-- Chromium source checkout
+    update.[bat|sh]         <-- Bootstrap script for automate-git.py
+    depot_tools/            <-- Chromium build tools
+```
+### Set System Variables
+
+```
+set CEF_USE_GN=0
+set DEPOT_TOOLS_WIN_TOOLCHAIN=0
+set GYP_DEFINES=component=shared_library
+set GYP_GENERATORS=msvs-ninja,ninja
+set GYP_MSVS_VERSION=2013
+set GYP_MSVS_OVERRIDE_PATH=[Drive]]:\[Path]]\Microsoft Visual Studio 12.0
+set GN_DEFINES=is_official_build=true proprietary_codecs=true ffmpeg_branding=Chrome
+```
+Set on system variables depot_tools path eg ```C:\code\depot_tools```
+and test via running where python on cmd to see if the path of depot_tools is presented first
 
 ### To build a release branch 
 ```
@@ -54,7 +84,7 @@ All the below commands should be run using the system ```cmd.exe``` and not a Cy
 2. Get depot_tools from the repo and extract to ```c:\code\depot_tools```. Do not use drag-n-drop or copy-n-paste extract from Explorer, this will not extract the hidden ".git" folder which is necessary for depot_tools to auto-update itself. You can use "Extract all..." from the context menu though. 7-zip is also a good tool for this.
 
 
-3. Run "update_depot_tools.bat" to install Python and Git. * We don’t need that for our pcs because we already have them.
+3. Run "update_depot_tools.bat" to install Python and Git. - If not already installed.
     ``` 
    cd c:\code\depot_tools
    update_depot_tools.bat
@@ -71,7 +101,7 @@ All the below commands should be run using the system ```cmd.exe``` and not a Cy
 
 6. Create the ```c:\code\chromium_git\update.bat``` script with the following contents.
 ```
-   set GN_DEFINES=is_component_build=true
+set GN_DEFINES=is_component_build=true
 # Use vs2013 or vs2015 as appropriate.
 set GN_ARGUMENTS=--ide=vs2013 --sln=cef --filters=//cef/*
 python ..\automate\automate-git.py --download-dir=c:\code\chromium_git --depot-tools-dir=c:\code\depot_tools --no-distrib --no-build
@@ -99,6 +129,7 @@ cd c:\code\chromium_git\chromium\src
 ninja -C out\Debug_GN_x86 cef
 ```
    Replace "Debug" with "Release" to generate a Release build instead of a Debug build. Replace “x86” with “x64” to generate a 64-bit build instead of a 32-bit build.
+
 9. Run the resulting cefclient sample application.
 ```
 cd c:\code\chromium_git\chromium\src
@@ -108,9 +139,25 @@ out\Debug_GN_x86\cefclient.exe
 
 
 ## Troubleshooting
+During the process of compiling 2623 version, some errors will be encountered, causing the compilation to fail.
+Re-running the command theoriticaly will solve the problem. Also look at the log file if log parameter was used.
 
 ### Loading...
 
+## Add MP3 and MP4 support
+Open the ```C:\...\chromium\src\cef\cef.gypi``` file and add the following configuration information under the variables section
+```
+'proprietary_codecs': 1,
+'ffmpeg_branding': 'Chrome',
+```
+Open separately
+```C:\...\chromium\src\third_party\ffmpeg\chromium\config\Chrome\win\ia32\config.h```
+&
+```C:\...\chromium\src\third_party\ffmpeg\chromium\config\Chrome\win\x64\config.h```
+In the original configuration ```FFMPEG_CONFIGURATION```  Add the following:
+```
+--Enable-decoder='rv10,rv20,rv30,rv40,cook,h263,h263i,mpeg4,msmpeg4v1,msmpeg4v2,msmpeg4v3,amrnb,amrwb,ac3,flv' --enable-demuxer='rm,mpegvideo,avi,avisynth, h263,aac,amr,ac3,flv,mpegts,mpegtsraw' --enable-parser='mpegvideo,rv30,rv40,h263,mpeg4video,ac3'
+```
 ## Automate script parameters
 ### Setup options.
 --download-dir : 'Download directory with no spaces [required].'
